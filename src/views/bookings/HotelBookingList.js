@@ -32,9 +32,8 @@ const HotelBookingList = () => {
   const [endDate, setEndDate] = useState(null);
   const HotelId=localStorage.getItem('hotel_id');
   const [dataRecord, setDataRecord] = useState("");
-  const [filter, setFilter] = useState({ BookingNo: "", Mobile: "", Status: "" })
+  const [filter, setFilter] = useState({ BookingNo: "", Mobile: "", Status: "" ,customer_name:""})
   useEffect(() => {
-    console.log(HotelId,'aa');
     userListing();
     user.setIsopenHotel(true)
 
@@ -46,7 +45,7 @@ const HotelBookingList = () => {
   }
   console.log(filter,'fil');
   const handleCanceluser = (e) => {
-    setFilter({ BookingNo: "", Mobile: "", Status: "" });
+    setFilter({ BookingNo: "", Mobile: "", Status: "" ,customer_name:""});
     setStartDate(null)
     // userListing();
 
@@ -63,9 +62,9 @@ const HotelBookingList = () => {
     if (startDate) {
       datefrom = moment(startDate).format("YYYY-MM-DD");
     }
-
+    console.log(filter.customer_name,'cus');
     await axios({
-      url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=${filter.BookingNo}&BookingDate=${datefrom}&Offset=${temp ? temp : 0}&RecordCount=${pageSize}&PaymentDate=&Phoneno=${filter.Mobile}&IsCancelled=${filter.Status}`,
+      url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=${filter.BookingNo}&BookingDate=${datefrom}&CustomerName=${filter.customer_name}&Offset=${temp ? temp : 0}&RecordCount=${pageSize}&PaymentDate=&Phoneno=${filter.Mobile}&IsCancelled=0`,
       method: 'GET',
       headers: {
         "Authorization" : `Bearer ${token}`,
@@ -73,8 +72,6 @@ const HotelBookingList = () => {
       }
 
     }).then((response) => {
-      console.log(response.data.data,'list');
-
       if (response.data.status == 1) {
         if (response.data.totalRecords === 0) {
           setDataRecord(response.data.totalRecords)
@@ -106,7 +103,7 @@ const HotelBookingList = () => {
   const userListingReset = async () => {
     setLoading(true)
     await axios({
-    url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=&BookingDate=&Offset=0&RecordCount=${pageSize}&PaymentDate=&Phoneno=&IsCancelled=`,
+    url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=&CustomerName=&BookingDate=&Offset=0&RecordCount=${pageSize}&PaymentDate=&Phoneno=&IsCancelled=0`,
       method: 'GET',
       headers: {
         "Authorization" : `Bearer ${token}`,
@@ -216,7 +213,23 @@ const HotelBookingList = () => {
                     />
 
                   </div>
-
+                  <div className="relative w-full lg:w-6/12 mb-3 px-2">
+                    <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="customer_name"
+                    >
+                      Guest Name
+                    </label>
+                    <input
+                      onChange={changeHandler('customer_name')}
+                      value={filter.customer_name}
+                      name="customer_name"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Booking No"
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    />
+                  </div>
 
                   <div className="relative w-full lg:w-6/12 mb-3 px-2">
                     <label
@@ -238,7 +251,7 @@ const HotelBookingList = () => {
 
                   </div>
                   
-                  <div className="relative w-full lg:w-6/12 mb-3 px-2">
+                  {/* <div className="relative w-full lg:w-6/12 mb-3 px-2">
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="Status"
@@ -253,7 +266,7 @@ const HotelBookingList = () => {
                       <option value="0">Confirmed</option>
                       <option value="1">Cancelled</option>
                     </select>
-                  </div>
+                  </div> */}
 
 
                 </div>

@@ -148,7 +148,7 @@ const HotelViewBooking = () => {
                     navigate('/bookings')
                     Swal.fire({
                     icon: 'success',
-                    text: 'Room Deleted successfully!',
+                    text: 'Booking cancelled successfully!',
                     showConfirmButton: false,
                     timer: 2000
                 })

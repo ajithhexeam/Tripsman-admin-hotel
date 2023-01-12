@@ -12,7 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { AppContext } from "../../App";
 import 'react-loading-skeleton/dist/skeleton.css'
 import DatePicker from "react-datepicker";
-import HotelBookTable from "../../Components/HotelTables/HotelBookTable";
+import BookHistoryTable from "../../Components/HotelTables/BookHistoryTable";
 const { REACT_APP_AUTH_SERVER } = process.env;
 const { REACT_APP_SERVER_URL } = process.env;
 const HotelBookingHistoryList = () => {
@@ -103,10 +103,15 @@ const HotelBookingHistoryList = () => {
 
 
   }
-  const userListingReset = async () => {
+  const userListingReset = async (temp) => {
     setLoading(true)
+    let datefrom = "";
+
+    if (startDate) {
+      datefrom = moment(startDate).format("YYYY-MM-DD");
+    }
     await axios({
-    url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=&BookingDate=&Offset=0&RecordCount=${pageSize}&PaymentDate=&Phoneno=&IsCancelled=`,
+      url:`${REACT_APP_SERVER_URL}/api/HotelVendorBooking/GetHotelVendorBookingList?BookingNo=${filter.BookingNo}&BookingDate=${datefrom}&Offset=${temp ? temp : 0}&RecordCount=${pageSize}&PaymentDate=&Phoneno=${filter.Mobile}&IsCancelled=${filter.Status}`,
       method: 'GET',
       headers: {
         "Authorization" : `Bearer ${token}`,
@@ -292,19 +297,13 @@ const HotelBookingHistoryList = () => {
               <div className="text-center">
               </div>
             </div>
-            <div className="text-center">
-             
+            <div className="text-center">             
             </div>
           </div>
-
-
-
-
           <div className="flex flex-wrap mt-4">
-
             <div className="w-full mb-12 px-4">
               {loading ? <Skeleton count={5} /> :
-                <HotelBookTable data={userList} Listing={userListing} dataRecord={dataRecord} />}
+                <BookHistoryTable data={userList} Listing={userListing} dataRecord={dataRecord} />}
 
               <div className="flex flex-wrap float-right">
                 <Pagination
